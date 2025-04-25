@@ -1,5 +1,7 @@
 Илюха напиши тут инструкцию. Как качать, как юзать и т.д., eсли что загружать через Release, они справа. ТОЛЬКО НА НА АНГЛИЙСКОМ. То что ниже это пример от гпт.
 
+![logo](img/png/logo128x128.png)
+
 # MediaGroup Tool
 
 A Python application for processing images, allowing users to change DPI, resize images, and add MediaGroup and/or TUSUR logos. The program uses a graphical interface (tkinter) for selecting input and output folders and a console interface for selecting processing options.
@@ -9,20 +11,29 @@ A Python application for processing images, allowing users to change DPI, resize
 - Resize images with specified DPI.
 - Add MediaGroup logo (bottom-left), TUSUR logo (bottom-right), or both.
 - Cross-platform: Works on Windows, macOS, and Linux.
-- Can be packaged into a single executable file using PyInstaller.
+- Can be packaged into a single executable file using PyInstaller with a custom icon.
 
 ## Prerequisites
 - Python 3.6 or higher (tkinter is included in the standard library).
-- Two text files with base64-encoded PNG logos: `mediagroup_logo.txt` and `tusur_logo.txt` (must be placed in the same directory as `mg-tool.py`).
+- Two text files with base64-encoded PNG logos: `mediagroup_logo.txt` and `tusur_logo.txt` (included in the project root).
 
 ## Installation
 
 ### 1. Clone or Download the Project
-Download the project files, including:
-- `mg-tool.py`
-- `mediagroup_logo.txt`
-- `tusur_logo.txt`
-- `requirements.txt`
+Clone the repository or download the project files:
+```bash
+git clone https://github.com/yourusername/mediagroup-tool.git
+cd mediagroup-tool
+```
+The project includes:
+- `mg-tool.py` (main script)
+- `mediagroup_logo.txt` (MediaGroup logo in base64)
+- `tusur_logo.txt` (TUSUR logo in base64)
+- `requirements.txt` (dependencies)
+- `img/` (folder with icons and PNGs)
+  - `logo512x512.ico` (icon for Windows)
+  - `logo512x512.icns` (icon for macOS)
+  - `png/` (various PNG sizes of the logo)
 
 ### 2. Create a Virtual Environment
 It's recommended to use a virtual environment to isolate dependencies.
@@ -45,26 +56,6 @@ Install the required packages using `requirements.txt`:
 pip install -r requirements.txt
 ```
 
-### 4. Prepare Logo Files
-Ensure `mediagroup_logo.txt` and `tusur_logo.txt` are in the same directory as `mg-tool.py`. These files should contain base64-encoded PNG images of the MediaGroup and TUSUR logos, respectively.
-
-To generate base64 files from PNG logos:
-```python
-import base64
-
-# For MediaGroup
-with open("path/to/mediagroup_logo.png", "rb") as image_file:
-    encoded = base64.b64encode(image_file.read()).decode('utf-8')
-    with open("mediagroup_logo.txt", "w", encoding="utf-8") as txt_file:
-        txt_file.write(encoded)
-
-# For TUSUR
-with open("path/to/tusur_logo.png", "rb") as image_file:
-    encoded = base64.b64encode(image_file.read()).decode('utf-8')
-    with open("tusur_logo.txt", "w", encoding="utf-8") as txt_file:
-        txt_file.write(encoded)
-```
-
 ## Running the Program
 1. Activate the virtual environment (if not already activated).
 2. Run the program:
@@ -81,7 +72,7 @@ with open("path/to/tusur_logo.png", "rb") as image_file:
    - Exit
 
 ## Using the Prebuilt Executable
-You can download prebuilt executables from the [Releases](https://github.com/yourusername/mediagroup-tool/releases) section on the right.
+You can download prebuilt executables from the [Releases](https://github.com/yourusername/mediagroup-tool/releases) section on the right. Each executable comes with a custom icon for easy recognition.
 
 - **Windows (`mg-tool.exe`)**: Download and double-click to run.
 - **Linux (`mg-tool`)**: Download, make it executable, and run:
@@ -107,19 +98,22 @@ To create a single executable file for distribution (no Python installation requ
    ```bash
    pip install pyinstaller
    ```
-2. Build the executable:
+2. Build the executable with a custom icon:
    - On Windows:
      ```bash
-     pyinstaller --onefile --add-data "mediagroup_logo.txt;." --add-data "tusur_logo.txt;." mg-tool.py
+     pyinstaller --onefile --add-data "mediagroup_logo.txt;." --add-data "tusur_logo.txt;." --icon img/logo512x512.ico mg-tool.py
      ```
-   - On macOS/Linux:
+   - On macOS:
+     ```bash
+     pyinstaller --onefile --add-data "mediagroup_logo.txt:." --add-data "tusur_logo.txt:." --icon img/logo512x512.icns mg-tool.py
+     ```
+   - On Linux:
      ```bash
      pyinstaller --onefile --add-data "mediagroup_logo.txt:." --add-data "tusur_logo.txt:." mg-tool.py
      ```
-3. Find the executable in the `dist/` folder (`mg-tool.exe` on Windows or `mg-tool` on macOS/Linux).
-4. Distribute the executable along with `mediagroup_logo.txt` and `tusur_logo.txt` (they are embedded in the executable but may be useful for reference).
+3. Find the executable in the `dist/` folder (`mg-tool.exe` on Windows, `mg-tool` on macOS/Linux).
 
 ## Troubleshooting
-- **Logo not found**: Ensure `mediagroup_logo.txt` and `tusur_logo.txt` are in the same directory as `mg-tool.py` (or embedded correctly in the executable).
+- **Logo not found**: Ensure `mediagroup_logo.txt` and `tusur_logo.txt` are in the project root (or embedded correctly in the executable).
 - **GUI not showing**: Verify that Python includes tkinter (run `python -m tkinter` to test). If missing, install it (e.g., `sudo apt-get install python3-tk` on Ubuntu).
 - **Images not processing**: Check that input images are in .jpg or .jpeg format and that the output folder is writable.
