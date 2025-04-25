@@ -80,6 +80,26 @@ with open("path/to/tusur_logo.png", "rb") as image_file:
    - Add logos (MediaGroup, TUSUR, or both)
    - Exit
 
+## Using the Prebuilt Executable
+You can download prebuilt executables from the [Releases](https://github.com/yourusername/mediagroup-tool/releases) section on the right.
+
+- **Windows (`mg-tool.exe`)**: Download and double-click to run.
+- **Linux (`mg-tool`)**: Download, make it executable, and run:
+  ```bash
+  chmod +x mg-tool
+  ./mg-tool
+  ```
+- **macOS (`mg-tool-macos`)**: Download, make it executable, and run:
+  ```bash
+  chmod +x mg-tool-macos
+  ./mg-tool-macos
+  ```
+
+After launching:
+1. Select the input folder with your images (.jpg, .jpeg) using the graphical dialog.
+2. Select the output folder for processed images.
+3. Use the console menu to choose an action (change DPI, resize, add logos, or exit).
+
 ## Building an Executable
 To create a single executable file for distribution (no Python installation required):
 
