@@ -32,3 +32,20 @@ Download the appropriate version for your OS: `.exe` for Windows, or no extensio
 - **Placing**: The program automatically places the watermark(s) on the images.
 - **Supported Formats**: Watermarks are applied to `.jpg` and `.jpeg` images only.
 - **Review**: Check the output folder to review the watermarked images after processing.
+
+
+## Running on macOS and Linux
+  1. Download the macOS/Linux binary from the Releases section.
+  2. Move the binary to a convenient location.
+  3. Open a terminal and navigate to the program’s directory:
+     ```bash
+     cd /path/to/mediagroup-tool
+     ```
+  4. Make the binary executable:
+     ```bash
+     chmod +x mg-tool
+     ```
+  5. Run the program:
+     ```bash
+     ./mg-tool
+     ```
