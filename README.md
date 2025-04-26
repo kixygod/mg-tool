@@ -3,32 +3,32 @@
 
 # MediaGroup Tool
 
-Приложение, написанное на Python и использующееся для редактирования изображений: смены DPI, изменения разрешения, добавление водяного знака MediaGroup/TUSUR.
+A Python application designed for image editing: changing DPI, resizing resolution, and adding MediaGroup/TUSUR watermarks.
 
-## Функции
-- Смена DPI изображений.
-- Изменение разрешения.
-- Добавление водяного знака MediaGroup или TUSUR или сразу оба.
+## Features
+- Change image DPI.
+- Resize resolution.
+- Add MediaGroup, TUSUR, or both watermarks.
 
-## Установка
+## Installation
 
-Заходите в раздел [Releases](https://github.com/yourusername/mediagroup-tool/releases)
-Скаичваете версию прогаммы, исходя из вашей ОС: для Windows .exe, для MacOS и Linux-подобных систем без расширения
+Visit the [Releases](https://github.com/kixygod/mg-tool/releases) section.  
+Download the appropriate version for your OS: `.exe` for Windows, or no extension for macOS and Linux-like systems.
 
-## Использование программы
-1. Перемещаете программу в удобное вам место
-
-2. Запускаете программу
-
-3. Следуете следующим пунктам:
-
-   - Выбрать папку с изображениями, которые нужны (.jpg, .jpeg).
-   - Выбрать выходную папку обработанных изображений.
-
-4. Используйте консольное меню, чтобы выбрать необходимое действие:
-
-   - Смена DPI
-   - Смена разрешения и DPI
-   - Добавление водяных знаков (MediaGroup, TUSUR, или оба)
-   - Выход
-
+## Usage
+1. Move the program to a convenient location.
+2. Run the program.
+3. Follow these steps:
+   - Select the folder containing the images to process (.jpg, .jpeg).
+   - Choose the output folder for processed images.
+4. Use the console menu to select the desired action:
+   - Change DPI
+   - Change resolution and DPI
+   - Add watermarks (MediaGroup, TUSUR, or both)
+   - Exit
+  
+## Working with Watermarks
+- **Adding Watermarks**: Select the watermark option in the console menu to add MediaGroup, TUSUR, or both watermarks to your images.
+- **Placing**: The program automatically places the watermark(s) on the images.
+- **Supported Formats**: Watermarks are applied to `.jpg` and `.jpeg` images only.
+- **Review**: Check the output folder to review the watermarked images after processing.
