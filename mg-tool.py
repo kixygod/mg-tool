@@ -193,18 +193,25 @@ def process_image(filename, input_folder, output_folder, logo_choice):
             alpha = ImageEnhance.Brightness(alpha).enhance(0.65)
             tusur_logo.putalpha(alpha)
             original_width, original_height = tusur_logo.size
-            max_width = back_img.width // 5
-            max_height = back_img.height // 5
+            max_width = back_img.width // 6.3
+            max_height = back_img.height // 6.3
             scale = min(max_width / original_width, max_height / original_height)
             new_width = int(original_width * scale)
             new_height = int(original_height * scale)
             resized_tusur_logo = tusur_logo.resize(
                 (new_width, new_height), Image.LANCZOS
             )
-            position = (
-                back_img.width - new_width - RIGHT_PADDING,
-                back_img.height - new_height - UNDER_PADDING,
-            )
+            if back_img.width > back_img.height:
+                position = (
+                    back_img.width - new_width - RIGHT_PADDING,
+                    back_img.height - new_height - UNDER_PADDING - 80,
+                )
+            else:
+                position = (
+                    back_img.width - new_width - RIGHT_PADDING,
+                    back_img.height - new_height - UNDER_PADDING - 100,
+                )
+
             back_img.paste(resized_tusur_logo, position, resized_tusur_logo)
 
         back_img = back_img.convert("RGB")

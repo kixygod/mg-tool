@@ -1,9 +1,10 @@
 
-![logo](img/png/logo128x128.png)
+<p align="center"><img src="https://raw.githubusercontent.com/kixygod/mg-tool/refs/heads/main/img/png/logo512x512.png" width="180"></p>
+<h1 align="center">MediaGroup Tool</h1>
+<p align="center">
+  A Python application designed for image editing: changing DPI, resizing resolution, and adding MediaGroup/TUSUR watermarks.
+</p>
 
-# MediaGroup Tool
-
-A Python application designed for image editing: changing DPI, resizing resolution, and adding MediaGroup/TUSUR watermarks.
 
 ## Features
 - Change image DPI.
