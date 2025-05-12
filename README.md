@@ -40,7 +40,7 @@ Download the appropriate version for your OS: `.exe` for Windows, or no extensio
   2. Move the binary to a convenient location.
   3. Open a terminal and navigate to the program’s directory:
      ```bash
-     cd /path/to/mediagroup-tool
+     cd /path/to/downloaded/mg-tool
      ```
   4. Make the binary executable:
      ```bash
@@ -61,11 +61,11 @@ To create a single executable file for distribution (no Python installation requ
 2. Build the executable:
    - On Windows:
      ```bash
-     pyinstaller --onefile --add-data "mediagroup_logo.txt;." --add-data "tusur_logo.txt;." mg-tool.py
+     pyinstaller --onefile --add-data "mediagroup_logo.txt:." --add-data "tusur_logo.txt:." --icon img/logo512x512.icns mg-tool.py
      ```
    - On macOS/Linux:
      ```bash
-     pyinstaller --onefile --add-data "mediagroup_logo.txt:." --add-data "tusur_logo.txt:." mg-tool.py
+     pyinstaller --onefile --add-data "mediagroup_logo.txt:." --add-data "tusur_logo.txt:." --icon img/logo512x512.icns mg-tool.py
      ```
 3. Find the executable in the `dist/` folder (`mg-tool.exe` on Windows or `mg-tool` on macOS/Linux).
 4. Distribute the executable along with `mediagroup_logo.txt` and `tusur_logo.txt` (they are embedded in the executable but may be useful for reference).
