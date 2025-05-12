@@ -50,3 +50,22 @@ Download the appropriate version for your OS: `.exe` for Windows, or no extensio
      ```bash
      ./mg-tool
      ```
+
+## Building an Executable
+To create a single executable file for distribution (no Python installation required):
+
+1. Install PyInstaller (if not already installed):
+   ```bash
+   pip install pyinstaller
+   ```
+2. Build the executable:
+   - On Windows:
+     ```bash
+     pyinstaller --onefile --add-data "mediagroup_logo.txt;." --add-data "tusur_logo.txt;." mg-tool.py
+     ```
+   - On macOS/Linux:
+     ```bash
+     pyinstaller --onefile --add-data "mediagroup_logo.txt:." --add-data "tusur_logo.txt:." mg-tool.py
+     ```
+3. Find the executable in the `dist/` folder (`mg-tool.exe` on Windows or `mg-tool` on macOS/Linux).
+4. Distribute the executable along with `mediagroup_logo.txt` and `tusur_logo.txt` (they are embedded in the executable but may be useful for reference).
