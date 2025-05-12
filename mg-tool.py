@@ -6,6 +6,7 @@ import base64
 from io import BytesIO
 import tkinter as tk
 from tkinter import filedialog, messagebox
+import multiprocessing
 
 PROPORTION = 2.47
 MEDIA_LOGO_WIDTH_PERCENT = 13.7
@@ -25,10 +26,10 @@ def init_logos():
         else:
             base_path = os.path.dirname(os.path.abspath(__file__))
 
-        # Load and preprocess MediaGroup logo
-        with open(
-            os.path.join(base_path, MEDIA_GROUP_LOGO_FILE), "r", encoding="utf-8"
-        ) as f:
+        media_logo_path = os.path.join(base_path, MEDIA_GROUP_LOGO_FILE)
+        if not os.path.exists(media_logo_path):
+            raise FileNotFoundError(f"Logo file not found: {media_logo_path}")
+        with open(media_logo_path, "r", encoding="utf-8") as f:
             logo_base64 = f.read().strip()
         logo_data = base64.b64decode(logo_base64)
         media_logo = Image.open(BytesIO(logo_data)).convert("RGBA")
@@ -36,8 +37,10 @@ def init_logos():
         alpha = ImageEnhance.Brightness(alpha).enhance(0.65)
         media_logo.putalpha(alpha)
 
-        # Load and preprocess TUSUR logo
-        with open(os.path.join(base_path, TUSUR_LOGO_FILE), "r", encoding="utf-8") as f:
+        tusur_logo_path = os.path.join(base_path, TUSUR_LOGO_FILE)
+        if not os.path.exists(tusur_logo_path):
+            raise FileNotFoundError(f"Logo file not found: {tusur_logo_path}")
+        with open(tusur_logo_path, "r", encoding="utf-8") as f:
             logo_base64 = f.read().strip()
         logo_data = base64.b64decode(logo_base64)
         tusur_logo = Image.open(BytesIO(logo_data)).convert("RGBA")
@@ -117,7 +120,7 @@ def process_dpi_image(filename, input_folder, output_folder, dpi):
 def process_resolution_image(filename, input_folder, output_folder, dpi, width, height):
     with Image.open(os.path.join(input_folder, filename)) as img:
         img.info["dpi"] = (dpi, dpi)
-        img = img.resize((width, height), Image.BICUBIC)
+        img = img.resize((width, height), Image.LANCZOS)
         img.save(
             os.path.join(output_folder, filename),
             dpi=(dpi, dpi),
@@ -213,7 +216,7 @@ def process_image(
             logo_width = int(img_width * MEDIA_LOGO_WIDTH_PERCENT / 100)
             logo_height = int(logo_width / PROPORTION)
             resized_media_logo = media_logo.resize(
-                (logo_width, logo_height), Image.BICUBIC
+                (logo_width, logo_height), Image.LANCZOS
             )
 
             left_padding = int(img_width * LEFT_PADDING_PERCENT / 100)
@@ -229,7 +232,7 @@ def process_image(
             logo_width = int(img_width * TUSUR_LOGO_WIDTH_PERCENT / 100)
             logo_height = int(logo_width * original_height / original_width)
             resized_tusur_logo = tusur_logo.resize(
-                (logo_width, logo_height), Image.BICUBIC
+                (logo_width, logo_height), Image.LANCZOS
             )
 
             right_padding = int(img_width * RIGHT_PADDING_PERCENT / 100)
@@ -257,7 +260,7 @@ def processLogo(input_folder, output_folder, logo_choice, media_logo, tusur_logo
     ]
     total_files = len(files)
 
-    with concurrent.futures.ProcessPoolExecutor(
+    with concurrent.futures.ThreadPoolExecutor(
         max_workers=os.cpu_count() + 2
     ) as executor:
         futures = []
@@ -338,4 +341,5 @@ def main():
 
 
 if __name__ == "__main__":
+    multiprocessing.freeze_support()
     main()
