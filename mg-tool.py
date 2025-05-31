@@ -11,6 +11,8 @@ import multiprocessing
 PROPORTION = 2.47
 MEDIA_LOGO_WIDTH_PERCENT = 13.7
 TUSUR_LOGO_WIDTH_PERCENT = 15.8
+CUSTOM_LOGO_WIDTH_PERCENT_VERTICAL = 14.0
+CUSTOM_LOGO_WIDTH_PERCENT_HORIZONTAL = 7.0
 UNDER_PADDING_PERCENT = 3.0
 LEFT_PADDING_PERCENT = 5.0
 RIGHT_PADDING_PERCENT = 5.0
@@ -54,6 +56,53 @@ def init_logos():
         sys.exit(1)
 
 
+def load_custom_logo():
+    print("Opening file dialog for custom logo selection...")
+    root = tk.Tk()
+    root.withdraw()
+    try:
+        logo_path = filedialog.askopenfilename(
+            title="Выберите PNG файл логотипа", filetypes=[("PNG files", "*.png")]
+        )
+        print(f"Selected logo path (via dialog): {logo_path}")
+        if not logo_path:
+            print(
+                "No file selected via dialog. Please enter the full path to the PNG logo file (or press Enter to cancel):"
+            )
+            logo_path = input().strip()
+            if not logo_path:
+                messagebox.showerror(
+                    "Ошибка", "Файл логотипа не выбран. Возвращение в меню."
+                )
+                return None
+        if not os.path.exists(logo_path) or not logo_path.lower().endswith(".png"):
+            messagebox.showerror(
+                "Ошибка", "Указан неверный путь или файл не является PNG."
+            )
+            return None
+        custom_logo = Image.open(logo_path).convert("RGBA")
+        alpha = custom_logo.split()[3]
+        alpha = ImageEnhance.Brightness(alpha).enhance(0.65)
+        custom_logo.putalpha(alpha)
+        print("Custom logo loaded successfully.")
+        return custom_logo
+    except Exception as e:
+        messagebox.showerror("Ошибка", f"Не удалось загрузить логотип: {e}")
+        return None
+
+
+def get_logo_position():
+    while True:
+        print("Где разместить пользовательский логотип?")
+        print("1) Слева снизу")
+        print("2) Справа снизу")
+        print("Номер: ")
+        choice = get_input()
+        if choice in [1, 2]:
+            return choice
+        print("Некорректный тип данных")
+
+
 def clear():
     return os.system("cls" if os.name == "nt" else "clear")
 
@@ -87,10 +136,11 @@ def logo_menu():
         print("1) Вставить логотип MediaGroup")
         print("2) Вставить логотип TUSUR")
         print("3) Вставить оба логотипа")
-        print("4) Назад")
+        print("4) Вставить пользовательский логотип (PNG)")
+        print("5) Назад")
         print("Номер: ")
         choice = get_input()
-        if choice in [1, 2, 3, 4]:
+        if choice in [1, 2, 3, 4, 5]:
             return choice
         print("Некорректный тип данных")
 
@@ -166,7 +216,7 @@ def processDPI(input_folder, output_folder, dpi):
 
 def processResolution(input_folder, output_folder, dpi, width, height):
     clear()
-    print("Все фотографии меняются под dpi ", dpi, " и разрешение ", width, "х", height)
+    print("Все фотографии меняются под dpi ", dpi, " и разрешение ", width, "x", height)
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
     files = [
@@ -206,7 +256,14 @@ def processResolution(input_folder, output_folder, dpi, width, height):
 
 
 def process_image(
-    filename, input_folder, output_folder, logo_choice, media_logo, tusur_logo
+    filename,
+    input_folder,
+    output_folder,
+    logo_choice,
+    media_logo,
+    tusur_logo,
+    custom_logo=None,
+    logo_position=1,
 ):
     with Image.open(os.path.join(input_folder, filename)) as img:
         back_img = img.copy()
@@ -245,11 +302,49 @@ def process_image(
             )
             back_img.paste(resized_tusur_logo, position, resized_tusur_logo)
 
+        if logo_choice == 4 and custom_logo:
+            original_width, original_height = custom_logo.size
+
+            logo_width_percent = (
+                CUSTOM_LOGO_WIDTH_PERCENT_VERTICAL
+                if img_height > img_width
+                else CUSTOM_LOGO_WIDTH_PERCENT_HORIZONTAL
+            )
+            logo_width = int(img_width * logo_width_percent / 100)
+            logo_height = int(logo_width * original_height / original_width)
+            resized_custom_logo = custom_logo.resize(
+                (logo_width, logo_height), Image.LANCZOS
+            )
+
+            under_padding = int(img_height * UNDER_PADDING_PERCENT / 100)
+            if logo_position == 1:
+                left_padding = int(img_width * LEFT_PADDING_PERCENT / 100)
+                position = (
+                    left_padding,
+                    img_height - logo_height - under_padding,
+                )
+            else:
+                right_padding = int(img_width * RIGHT_PADDING_PERCENT / 100)
+                vertical_offset = int(img_height / 100)
+                position = (
+                    img_width - logo_width - right_padding,
+                    img_height - logo_height - under_padding - vertical_offset,
+                )
+            back_img.paste(resized_custom_logo, position, resized_custom_logo)
+
         back_img = back_img.convert("RGB")
         back_img.save(os.path.join(output_folder, filename), quality=85, optimize=True)
 
 
-def processLogo(input_folder, output_folder, logo_choice, media_logo, tusur_logo):
+def processLogo(
+    input_folder,
+    output_folder,
+    logo_choice,
+    media_logo,
+    tusur_logo,
+    custom_logo=None,
+    logo_position=1,
+):
     clear()
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
@@ -274,6 +369,8 @@ def processLogo(input_folder, output_folder, logo_choice, media_logo, tusur_logo
                     logo_choice,
                     media_logo,
                     tusur_logo,
+                    custom_logo,
+                    logo_position,
                 )
             )
         completed = 0
@@ -323,18 +420,32 @@ def main():
             processDPI(input_folder, output_folder, dpi)
             print("\nВсё готово <3")
         elif choice == 2:
-            width = int(input("Ширина фоток: "))
-            height = int(input("Высота фоток: "))
+            width = int(input("Ширина фото: "))
+            height = int(input("Высота фото: "))
             dpi = int(input("Введите значение dpi: "))
             processResolution(input_folder, output_folder, dpi, width, height)
             print("\nВсё готово <3")
         elif choice == 3:
             logo_choice = logo_menu()
-            if logo_choice == 4:
+            if logo_choice == 5:
                 choice = menu()
                 continue
+            custom_logo = None
+            logo_position = 1
+            if logo_choice == 4:
+                custom_logo = load_custom_logo()
+                if not custom_logo:
+                    choice = menu()
+                    continue
+                logo_position = get_logo_position()
             processLogo(
-                input_folder, output_folder, logo_choice, media_logo, tusur_logo
+                input_folder,
+                output_folder,
+                logo_choice,
+                media_logo,
+                tusur_logo,
+                custom_logo,
+                logo_position,
             )
             print("\nВсё готово <3")
         choice = menu()
