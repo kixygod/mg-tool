@@ -310,6 +310,7 @@ def process_image(
                 if img_height > img_width
                 else CUSTOM_LOGO_WIDTH_PERCENT_HORIZONTAL
             )
+
             logo_width = int(img_width * logo_width_percent / 100)
             logo_height = int(logo_width * original_height / original_width)
             resized_custom_logo = custom_logo.resize(
@@ -437,6 +438,20 @@ def main():
                 if not custom_logo:
                     choice = menu()
                     continue
+                try:
+                    new_logo_width_percent_vertical = int(
+                        input("Введите процент для ширины логотипа (стандарт 14): ")
+                    )
+                    global CUSTOM_LOGO_WIDTH_PERCENT_VERTICAL, CUSTOM_LOGO_WIDTH_PERCENT_HORIZONTAL
+                    CUSTOM_LOGO_WIDTH_PERCENT_VERTICAL = new_logo_width_percent_vertical
+                    CUSTOM_LOGO_WIDTH_PERCENT_HORIZONTAL = (
+                        CUSTOM_LOGO_WIDTH_PERCENT_VERTICAL / 2
+                    )
+                except ValueError:
+                    print("Ошибка: введите целое число.")
+                    choice = menu()
+                    continue
+
                 logo_position = get_logo_position()
             processLogo(
                 input_folder,
